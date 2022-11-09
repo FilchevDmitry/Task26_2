@@ -6,11 +6,9 @@
 class TelephoneDirectory
 {
 private:
-int number = 0;
 	std::map <std::string, std::vector <std::string>> name;
 	std::map <std::string, std::string> call;
 public:
-
 	void setNamePhone(std::string &namesPhone, std::string &phone)
 	{
 		if (name.find(namesPhone) != name.end())
@@ -53,11 +51,8 @@ public:
 class Phone
 {
 private:
-
 	TelephoneDirectory database;
-
 public:
-
 	void setBase(std::string &name, std::string &phone)
 	{
 		database.setNamePhone(name, phone);
@@ -80,7 +75,104 @@ public:
 };
 int main()
 {
-	
-
-	
+	Phone* phone = new Phone();
+	std::string name;
+	std::string telefon;
+	std::string command;
+	std::string sms;
+	std::vector<std::string> numberPhone;
+	while (true)
+	{
+		std::cout << "Input command (add, call, sms, exit) : ";
+		std::cin >> command;
+		if (command == "add")
+		{
+			std::cout << "Input name : ";
+			std::cin >> name;
+			std::cout << "Input phone number (+7<10 numbers>) : ";
+			std::cin >> telefon;
+			if (phone->checkingTheInput(telefon))
+			{
+				phone->setBase(name, telefon);
+			}
+			else
+			{
+				std::cout << "Phone number entered incorrectly" << std::endl;
+			}	
+		}
+		if (command == "call")
+		{
+			std::cout << "Input name or number phone ";
+			std::cin >> command;
+			if (command.size() == 12 && command[0] == '+' || command[1] == '7')
+			{
+				phone->getCallName(name, command);
+				std::cout << "CALL" << " " << command << " " << "NAME : " << name<<std::endl;
+			}
+			else
+			{
+				phone->getCallPhone(command, numberPhone);
+				if (numberPhone.size() > 1)
+				{
+					int temp = 1;
+					std::cout << "What phone number do you want to call?\n";
+					for (auto i : numberPhone)
+					{
+						std::cout << temp <<"  "<<command<<" "<< i << std::endl;
+						temp++;
+					}
+					std::cin >> temp;
+					std::cout << "CALL" << "  " << "NAME : " << command <<" "<<numberPhone.at(temp-1)<< std::endl;
+				}
+				else
+				{
+					std::cout << "CALL" << "  " << "NAME : " << command << " " << numberPhone[0] << std::endl;
+				}
+			}
+		}
+		if (command == "sms")
+		{
+			std::cout << "Input name or number phone ";
+			std::cin >> command;
+			if (command.size() == 12 && command[0] == '+' || command[1] == '7')
+			{
+				phone->getCallName(name, command);
+				std::cin.ignore();
+				std::cout << "Input SMS :";
+				std::getline(std::cin, sms);
+				std::cout << "SMS sent" << " " << command << " " << "NAME : " << name << std::endl;
+			}
+			else
+			{
+				phone->getCallPhone(command, numberPhone);
+				if (numberPhone.size() > 1)
+				{
+					int temp = 1;
+					std::cout << "What phone number do you want to call?\n";
+					for (auto i : numberPhone)
+					{
+						std::cout << temp << "  " << command << " " << i << std::endl;
+						temp++;
+					}
+					std::cin >> temp;
+					std::cin.ignore();
+					std::cout << "Input SMS :";
+					std::getline(std::cin, sms);
+					std::cout << "SMS sent" << "  " << "NAME : " << command << " " << numberPhone.at(temp - 1) << std::endl;
+				}
+				else
+				{
+					std::cin.ignore();
+					std::cout << "Input SMS :";
+					std::getline(std::cin, sms);
+					std::cout << "SMS sent" << "  " << "NAME : " << command << " " << numberPhone[0] << std::endl;
+				}
+			}
+		}
+		if (command == "exit")
+		{
+			break;
+		}
+	}
+	delete phone;
 }
